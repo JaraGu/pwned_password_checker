@@ -12,16 +12,20 @@ def request_api_data(password_keyword):
     return res
 
 
-def read_response(response):
-    print(response.text)
+def password_leaks_count(hashes, hatb_checked):
+  hashes = (line.split(':') for line in hashes.text.splitlines())
+  for h, count in hashes:
+    if h == hatb_checked:
+      return count
+  return 0
 
 
 def pwned_api_checker(password):
     sha256password = hashlib.sha256(password.encode('utf-8')).hexdigest().upper()
     first5_char, tail = sha256password[:5], sha256password[5:] # splits our password in to two sections 
     response = request_api_data(first5_char)
-    print(response)
-    return read_response(response)
+    return password_leaks_count(response, tail)
+
 
 
 pwned_api_checker('123')
