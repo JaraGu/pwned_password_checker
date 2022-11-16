@@ -1,3 +1,5 @@
+import hashlib
+
 import requests
 
 
@@ -10,4 +12,16 @@ def request_api_data(password_keyword):
     return res
 
 
-request_api_data('CDBFE')  # the api only takes hashed password, testing if it raises any error
+def read_response(response):
+    print(response.text)
+
+
+def pwned_api_checker(password):
+    sha256password = hashlib.sha256(password.encode('utf-8')).hexdigest().upper()
+    first5_char, tail = sha256password[:5], sha256password[5:] # splits our password in to two sections 
+    response = request_api_data(first5_char)
+    print(response)
+    return read_response(response)
+
+
+pwned_api_checker('123')
